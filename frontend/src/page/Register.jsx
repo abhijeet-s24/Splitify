@@ -18,7 +18,6 @@ function Register() {
       alert('Passwords do not match.');
       return;
     }
-    // Replace with real registration call
     console.log('Registering', { fullName, username, email });
   };
 
