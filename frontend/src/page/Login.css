@@ -54,7 +54,7 @@
   width: 100%;
 }
 
-/* Labels */
+
 .login-label{
   font-size: 0.86rem;
   color: #F3E4C9;
@@ -63,7 +63,7 @@
   margin-bottom: 0.2rem;
 }
 
-/* Inputs */
+
 .login-input{
   width: 100%;
   padding: 0.95rem 1rem;
@@ -78,7 +78,6 @@
 
 .login-input::placeholder{ color: rgba(107,86,68,0.45); }
 
-/* Focus */
 .login-input:focus{
   outline: none;
   border-color: var(--sage);
@@ -86,7 +85,6 @@
   transform: translateY(-1px);
 }
 
-/* Button */
 .login-button{
   margin-top: 0.6rem;
   width: 100%;
@@ -113,7 +111,6 @@
   box-shadow: 0 6px 12px rgba(136,69,40,0.10);
 }
 
-/* Optional secondary action style (e.g., sign up) */
 .register-ghost{
   margin-top: 0.5rem;
   width: 100%;
@@ -126,7 +123,6 @@
   cursor: pointer;
 }
 
-/* Footer / register link */
 .login-footer{
   margin-top: 1rem;
   font-size: 0.9rem;
@@ -147,7 +143,6 @@
   transform: translateY(-1px);
 }
 
-/* small utility accent (e.g., badges) */
 .badge{
   display:inline-block;
   background: var(--light-accent);
@@ -158,7 +153,6 @@
   border: 1px solid rgba(200,184,150,0.12);
 }
 
-/* Responsive tweaks */
 @media (max-width: 420px){
   .login-container{
     padding: 1.6rem;
