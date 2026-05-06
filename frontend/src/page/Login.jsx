@@ -1,18 +1,38 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Login.css';
 
-function Login() {
-  const [username, setUsername] = useState('');
+function Login({ apiRequest, onAuthSuccess }) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      alert('Please enter both username and password.');
+    if (!email || !password) {
+      alert('Please enter both email and password.');
       return;
     }
-    console.log('Logging in with', { username, password });
+    setSubmitting(true);
+    setError('');
+
+    try {
+      const response = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
+      });
+
+      onAuthSuccess(response.data);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -23,16 +43,16 @@ function Login() {
           <h3 className="login-subtitle">Sign in to your account</h3>
 
           <form className="login-form" onSubmit={handleSubmit} noValidate>
-            <label htmlFor="username" className="login-label">Username</label>
+            <label htmlFor="email" className="login-label">Email</label>
             <input
-              id="username"
-              name="username"
-              type="text"
+              id="email"
+              name="email"
+              type="email"
               className="login-input"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
             />
 
             <label htmlFor="password" className="login-label">Password</label>
@@ -47,11 +67,15 @@ function Login() {
               autoComplete="current-password"
             />
 
-            <button type="submit" className="login-button">Login</button>
+            {error ? <p className="text-red-600 text-sm">{error}</p> : null}
+
+            <button type="submit" className="login-button" disabled={submitting}>
+              {submitting ? 'Signing in...' : 'Login'}
+            </button>
           </form>
 
           <p className="login-footer">
-            New user? <a href="/register" className="register-link">Register</a>
+            New user? <Link to="/register" className="register-link">Register</Link>
           </p>
         </div>
       </div>

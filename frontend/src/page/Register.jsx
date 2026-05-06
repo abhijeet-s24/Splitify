@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
-function Register() {
-  const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
+function Register({ apiRequest }) {
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!fullName || !username || !email || !password || !confirm) {
+    if (!name || !email || !password || !confirm) {
       alert('Please complete all fields.');
       return;
     }
@@ -18,7 +22,33 @@ function Register() {
       alert('Passwords do not match.');
       return;
     }
-    console.log('Registering', { fullName, username, email });
+    setSubmitting(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const payload = await apiRequest('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+        }),
+      });
+
+      setMessage(payload.message || 'Registration successful. Please login.');
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirm('');
+      setTimeout(() => {
+        navigate('/login');
+      }, 800);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -29,28 +59,16 @@ function Register() {
           <h3 className="login-subtitle">Join Splitify — keep expenses balanced</h3>
 
           <form className="login-form" onSubmit={handleSubmit} noValidate>
-            <label htmlFor="fullname" className="login-label">Full name</label>
+            <label htmlFor="name" className="login-label">Full name</label>
             <input
-              id="fullname"
-              name="fullname"
+              id="name"
+              name="name"
               type="text"
               className="login-input"
               placeholder="Your full name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               autoComplete="name"
-            />
-
-            <label htmlFor="username" className="login-label">Username</label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              className="login-input"
-              placeholder="Choose a username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
             />
 
             <label htmlFor="email" className="login-label">Email</label>
@@ -89,12 +107,17 @@ function Register() {
               autoComplete="new-password"
             />
 
-            <button type="submit" className="login-button">Create account</button>
+            {error ? <p className="text-red-600 text-sm">{error}</p> : null}
+            {message ? <p className="text-green-600 text-sm">{message}</p> : null}
+
+            <button type="submit" className="login-button" disabled={submitting}>
+              {submitting ? 'Creating account...' : 'Create account'}
+            </button>
           </form>
 
           <p className="login-footer">
             Already have an account?
-            <a href="/login" className="register-link"> Login</a>
+            <Link to="/login" className="register-link"> Login</Link>
           </p>
         </div>
       </div>

@@ -1,6 +1,10 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+const path = require("path");
 const User = require("../models/User");
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const SALT_ROUNDS = 10;
 
@@ -10,8 +14,10 @@ const SALT_ROUNDS = 10;
  * Returns the created user (without password).
  */
 const registerUser = async ({ name, email, password }) => {
+  const normalizedEmail = email.trim().toLowerCase();
+
   // Check if user already exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email: normalizedEmail });
   if (existingUser) {
     const error = new Error("User with this email already exists.");
     error.statusCode = 409;
@@ -24,7 +30,7 @@ const registerUser = async ({ name, email, password }) => {
   // Create user
   const user = await User.create({
     name,
-    email,
+    email: normalizedEmail,
     password: hashedPassword,
   });
 
@@ -39,9 +45,17 @@ const registerUser = async ({ name, email, password }) => {
  * Verifies credentials and returns a JWT token.
  */
 const loginUser = async ({ email, password }) => {
+  const normalizedEmail = email.trim().toLowerCase();
+
   // Find user by email
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: normalizedEmail });
   if (!user) {
+    const error = new Error("Invalid email or password.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (!user.password || typeof user.password !== "string") {
     const error = new Error("Invalid email or password.");
     error.statusCode = 401;
     throw error;
@@ -56,6 +70,12 @@ const loginUser = async ({ email, password }) => {
   }
 
   // Generate JWT
+  if (!process.env.JWT_SECRET) {
+    const error = new Error("JWT_SECRET is not configured.");
+    error.statusCode = 500;
+    throw error;
+  }
+
   const token = jwt.sign(
     { userId: user._id, email: user.email },
     process.env.JWT_SECRET,

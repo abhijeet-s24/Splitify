@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const connectDatabase = async () => {
-  const mongoUri = "mongodb://localhost:27017/splitwise-clone";
+  const mongoUri =
+    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/splitwise-clone";
 
   if (!mongoUri) {
     throw new Error("MONGODB_URI is not configured");
