@@ -6,32 +6,36 @@ function Navbar({ isAuthenticated, user, onLogout }) {
   const isGroupPage = location.pathname.startsWith('/groups/')
 
   return (
-    <nav className='bg-white shadow-md px-6 py-4 flex flex-col gap-4 md:flex-row md:justify-between md:items-center'>
-      <div>
-        <Link to='/' className='text-2xl font-bold text-indigo-600'>Splitify</Link>
-        {isAuthenticated && user ? (
-          <p className='text-sm text-gray-500 mt-1'>Signed in as {user.name}</p>
-        ) : null}
-      </div>
+    <div className='px-6 pt-6 pb-2 sticky top-0 z-40'>
+      <nav className='glass-panel px-6 py-4 rounded-2xl flex flex-col gap-4 md:flex-row md:justify-between md:items-center'>
+        <div>
+          <Link to='/' className='text-3xl font-extrabold text-[#C9996B] tracking-tight'>
+            Splitify
+          </Link>
+          {isAuthenticated && user ? (
+            <p className='text-sm text-[#F3E4C9]/70 mt-0.5 font-medium'>Signed in as <span className='text-[#F3E4C9]'>{user.name}</span></p>
+          ) : null}
+        </div>
 
-      <div className='flex items-center gap-4 flex-wrap'>
-        <Link className='text-gray-700 hover:text-indigo-600 font-medium' to='/'>
-          Home
-        </Link>
-        {isGroupPage ? (
-          <span className='text-indigo-600 font-medium'>Current Group</span>
-        ) : null}
-        {isAuthenticated ? (
-          <button
-            className='bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600'
-            onClick={onLogout}
-            type='button'
-          >
-            Logout
-          </button>
-        ) : null}
-      </div>
-    </nav>
+        <div className='flex items-center gap-6 flex-wrap'>
+          <Link className='text-[#F3E4C9]/70 hover:text-[#F3E4C9] font-medium transition-colors' to='/'>
+            Dashboard
+          </Link>
+          {isGroupPage ? (
+            <span className='text-[#C9996B] font-semibold text-glow'>Current Group</span>
+          ) : null}
+          {isAuthenticated ? (
+            <button
+              className='bg-rose-500/10 text-rose-400 border border-rose-500/20 px-5 py-2 rounded-xl font-bold hover:bg-rose-500 hover:text-white transition-all duration-300'
+              onClick={onLogout}
+              type='button'
+            >
+              Logout
+            </button>
+          ) : null}
+        </div>
+      </nav>
+    </div>
   )
 }
 

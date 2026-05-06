@@ -1,1 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Outfit', sans-serif;
+    @apply bg-[#F3E4C9] text-[#5C4F4A];
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-[#5C4F4A]/90 backdrop-blur-xl border border-[#d2b48c23] shadow-[0_12px_30px_rgba(0,0,0,0.15)];
+  }
+  
+  .glass-panel-hover {
+    @apply hover:bg-[#5C4F4A] hover:border-[#d2b48c]/40 hover:shadow-[0_16px_36px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px rgba(201, 153, 107, 0.5);
+  }
+  
+  .neon-border:focus-within {
+    box-shadow: 0 0 15px rgba(201, 153, 107, 0.4);
+    @apply border-[#C9996B]/50;
+  }
+}
